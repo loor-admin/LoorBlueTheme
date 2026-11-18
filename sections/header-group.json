@@ -1,0 +1,16 @@
+{
+  "type": "header",
+  "name": "Header group",
+  "sections": {
+    "announcement": {
+      "type": "announcement-bar"
+    },
+    "header": {
+      "type": "site-header"
+    }
+  },
+  "order": [
+    "announcement",
+    "header"
+  ]
+}
