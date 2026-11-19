@@ -1,9 +1,9 @@
-# Vibrant Pink Shopify theme
+# Loor Blue Theme
 
-An Online Store 2.0 foundation for the global shell and homepage. Upload the theme directory to Shopify or use Shopify CLI to preview it in a development store.
+A local Shopify Online Store 2.0 theme based on the existing Vibrant Pink storefront foundation and the VividPink Figma reference. The palette uses Deep Ocean Navy, Warm Ivory, Aqua Teal, Coral Pink and Sand Beige. Colors are editable in Shopify theme settings.
 
-In the theme editor, configure navigation menus, announcement terms, imagery, collection links, fit links, featured collection, footer menus, and brand colors. Filtered collection URLs can be pasted into fit links after storefront filters are configured in Shopify Search & Discovery. Provide descriptive alt text for images in Shopify.
+Upload the theme directory to Shopify or use Shopify CLI with a development store. Configure navigation, collections, product imagery, hero images, and links in the theme editor. The included mockup images are references and are not automatically assigned to Shopify sections.
 
-This delivery covers modules 1 and 2. The cart link opens Shopify's cart page; the requested AJAX cart drawer and the collection, product, cart, FAQ and contact templates are later modules. Search uses Shopify's predictive search endpoint and falls back to a normal search submission if the request fails. Localization changes submit the native Shopify localization form.
+This foundation covers the global shell and homepage. The cart opens Shopify's cart page; collection, product, cart, FAQ and contact templates and an AJAX cart drawer are not included. Search uses Shopify predictive search with a standard search fallback. Review the theme in a development store before publishing.
 
-The default palette uses dark text on pink and teal. Merchant-selected colors and hero images must be checked for contrast, including hero text over photography. Review content, navigation, responsive behavior, and accessibility in a real development store before publishing. Lighthouse scores depend on store content, apps, and network conditions.
+Figma: https://www.figma.com/design/3AtC5fmMArjosTBP4e0P8q/VividPink

@@ -1,9 +1,9 @@
 [
   {
     "name": "theme_info",
-    "theme_name": "Vibrant Pink",
+    "theme_name": "Loor Blue Theme",
     "theme_version": "1.0.0",
-    "theme_author": "Vibrant Pink"
+    "theme_author": "LOOR"
   },
   {
     "name": "Brand colors",
@@ -12,37 +12,49 @@
         "type": "color",
         "id": "color_background",
         "label": "Canvas",
-        "default": "#F2F0EA"
+        "default": "#F7F3EA"
       },
       {
         "type": "color",
         "id": "color_surface",
         "label": "Secondary surface",
-        "default": "#A8D5E3"
+        "default": "#E3D1B9"
       },
       {
         "type": "color",
         "id": "color_accent",
         "label": "Primary action",
-        "default": "#FF78AC"
+        "default": "#53BABC"
       },
       {
         "type": "color",
         "id": "color_text",
         "label": "Text",
-        "default": "#18181B"
+        "default": "#1F2224"
       },
       {
         "type": "color",
         "id": "color_muted",
         "label": "Muted text",
-        "default": "#52525B"
+        "default": "#525B60"
       },
       {
         "type": "color",
         "id": "color_border",
         "label": "Borders",
-        "default": "#DCD9D0"
+        "default": "#D6C9B8"
+      },
+      {
+        "type": "color",
+        "id": "color_navy",
+        "label": "Navigation and footer",
+        "default": "#152744"
+      },
+      {
+        "type": "color",
+        "id": "color_highlight",
+        "label": "Sale and launch highlights",
+        "default": "#F1645F"
       }
     ]
   }

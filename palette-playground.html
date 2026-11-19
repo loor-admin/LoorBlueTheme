@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Vibrant Pink — palette playground</title>
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; background: #e7e5e0; color: #18181b; font: 15px/1.45 system-ui, sans-serif; }
+  button, select, input { font: inherit; }
+  button, select { cursor: pointer; }
+  :focus-visible { outline: 3px solid #284df0; outline-offset: 3px; }
+  .workspace { display: grid; grid-template-columns: 300px minmax(0, 1fr); min-height: 100vh; }
+  .controls { position: sticky; top: 0; height: 100vh; overflow-y: auto; padding: 24px; background: #fff; border-right: 1px solid #d5d5d5; }
+  .controls h1 { font-size: 21px; line-height: 1.1; margin: 0 0 8px; }
+  .controls > p { color: #555; margin: 0 0 22px; }
+  fieldset { padding: 0; border: 0; margin: 0 0 24px; }
+  legend { font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: .09em; margin-bottom: 10px; }
+  .control { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin: 10px 0; }
+  .control select { max-width: 155px; padding: 6px; border: 1px solid #aaa; background: white; }
+  input[type=color] { width: 44px; height: 32px; padding: 1px; border: 1px solid #aaa; background: white; }
+  .presets, .actions { display: flex; flex-wrap: wrap; gap: 7px; }
+  .controls button { background: white; border: 1px solid #aaa; padding: 8px 10px; border-radius: 4px; }
+  .controls button:hover, .controls button[aria-pressed=true] { background: #18181b; border-color: #18181b; color: white; }
+  .contrast { font-size: 12px; color: #444; margin-top: 10px; }
+  .source-swatches { display:flex; flex-wrap:wrap; gap:5px; margin-top:10px; } .source-swatches button { width:30px; height:30px; padding:0; border:1px solid #777; }
+  .notice { min-height: 1.5em; font-size: 12px; margin-top: 10px; }
+  .stage { padding: 30px; overflow: auto; }
+  .stage-bar { display: flex; justify-content: space-between; gap: 1rem; align-items: center; max-width: 1440px; margin: 0 auto 12px; color: #555; font-size: 12px; }
+  .preview { --canvas: #f2f0ea; --surface: #a8d5e3; --accent: #ff78ac; --ink: #18181b; --muted: #52525b; --display: Impact, 'Arial Narrow', sans-serif; --body: Arial, sans-serif; width: min(100%, 1440px); margin: auto; background: var(--canvas); color: var(--ink); font-family: var(--body); box-shadow: 0 10px 40px #0002; container-type: inline-size; }
+  .preview.mobile { max-width: 390px; }
+  .preview a { color: inherit; text-decoration: none; }
+  .preview button { font-family: inherit; color: inherit; }
+  .announcement { background: var(--surface); text-align: center; padding: 9px 16px; font-size: 11px; font-weight: 700; }
+  .nav { display: flex; align-items: center; justify-content: space-between; gap: 18px; padding: 20px 5%; border-bottom: 1px solid color-mix(in srgb, var(--ink) 18%, transparent); }
+  .logo { font-family: var(--display); font-size: 28px; font-weight: 800; letter-spacing: -.04em; }
+  .nav-links, .nav-tools { display: flex; gap: 20px; font-size: 11px; font-weight: 700; text-transform: uppercase; }
+  .hamburger { display: none; font-size: 20px; }
+  .hero { min-height: 460px; display: grid; grid-template-columns: 1fr 1fr; background: var(--surface); }
+  .hero-copy { padding: clamp(28px, 6cqw, 90px); display: flex; flex-direction: column; justify-content: center; align-items: flex-start; }
+  .eyebrow { font-size: 11px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; }
+  .preview h2, .preview h3, .preview p { margin: 0; }
+  .preview h2 { font-family: var(--display); font-weight: 800; text-transform: uppercase; line-height: .94; letter-spacing: -.025em; }
+  .hero h2 { font-size: clamp(42px, 6cqw, 88px); margin: 14px 0; }
+  .hero-copy p:not(.eyebrow) { max-width: 29em; margin-bottom: 22px; }
+  .cta { display: inline-block; background: var(--accent); color: var(--ink); border: 2px solid var(--ink); padding: 14px 22px; font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: .06em; }
+  .hero-art { position: relative; overflow: hidden; min-height: 320px; background: color-mix(in srgb, var(--accent) 55%, var(--canvas)); }
+  .hero-art:before, .hero-art:after { content: ''; position: absolute; border-radius: 50%; }
+  .hero-art:before { width: 65%; aspect-ratio: 1; background: var(--canvas); top: 12%; left: 19%; }
+  .hero-art:after { width: 23%; aspect-ratio: 1; background: var(--surface); bottom: -6%; right: 5%; }
+  .glasses { position: absolute; z-index: 1; width: 68%; height: 21%; top: 40%; left: 16%; display: flex; align-items: flex-start; justify-content: space-between; transform: rotate(-8deg); }
+  .glasses:before, .glasses:after { content: ''; width: 41%; height: 85%; border: clamp(5px, .8cqw, 11px) solid var(--ink); border-radius: 25% 25% 45% 45%; background: color-mix(in srgb, var(--ink) 75%, transparent); }
+  .bridge { width: 18%; border-top: clamp(5px, .8cqw, 11px) solid var(--ink); margin-top: 8%; }
+  .content { padding: clamp(24px, 5cqw, 70px) 5%; }
+  .section-head { display: flex; justify-content: space-between; align-items: end; gap: 12px; margin-bottom: 20px; }
+  .section-head h2 { font-size: clamp(28px, 3.5cqw, 48px); }
+  .section-head span { font-size: 12px; text-decoration: underline; }
+  .tiles { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+  .tile-image { aspect-ratio: 4/3; display: grid; place-items: center; background: var(--surface); overflow: hidden; }
+  .tile:nth-child(2) .tile-image { background: color-mix(in srgb, var(--accent) 65%, var(--canvas)); }
+  .tile:nth-child(3) .tile-image { background: color-mix(in srgb, var(--ink) 15%, var(--canvas)); }
+  .tile-icon { width: 55%; height: 35%; position: relative; display: flex; justify-content: space-between; transform: rotate(-9deg); }
+  .tile-icon:before, .tile-icon:after { content: ''; width: 42%; height: 72%; border: 6px solid var(--ink); border-radius: 25% 25% 45% 45%; background: color-mix(in srgb, var(--ink) 75%, transparent); }
+  .tile-icon i { width: 16%; margin-top: 9%; border-top: 6px solid var(--ink); }
+  .tile h3 { font-size: 12px; text-transform: uppercase; margin-top: 10px; }
+  .products { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+  .product-image { aspect-ratio: 1; background: color-mix(in srgb, var(--ink) 7%, var(--canvas)); display: grid; place-items: center; }
+  .product-image .tile-icon { width: 62%; height: 30%; }
+  .product h3 { font-size: 12px; margin: 10px 0 4px; }
+  .product p { font-size: 12px; }
+  .trust { background: var(--surface); padding: 22px; text-align: center; font-size: 12px; }
+  .preview.split .hero { grid-template-columns: 1fr 1.3fr; }
+  .preview.split .hero-art { order: -1; }
+  .preview.stacked .hero { grid-template-columns: 1fr; }
+  .preview.stacked .hero-copy { text-align: center; align-items: center; }
+  .preview.stacked .hero-art { min-height: 260px; }
+  @container (max-width: 600px) { .nav-links, .nav-tools span:first-child { display: none; } .hamburger { display: block; } .nav { padding: 14px 5%; } .hero, .preview.split .hero { grid-template-columns: 1fr; } .hero-art, .preview.split .hero-art { order: -1; min-height: 240px; } .hero h2 { font-size: 48px; } .tiles { grid-template-columns: repeat(3, 75%); overflow: hidden; } .products { grid-template-columns: repeat(2, 1fr); } .product:nth-child(n+3) { display: none; } }
+  @media (max-width: 760px) { .workspace { display: block; } .controls { position: static; height: auto; border-right: 0; } .stage { padding: 16px; } }
+  .hero-art:before,.hero-art:after{display:none}.hero-art img{display:block;position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:65% center}.tile-image{aspect-ratio:3/1;background:var(--canvas)!important}.tile-image img{display:block;width:100%;height:100%;object-fit:contain}.product-image{background:var(--canvas)}.product-image img{display:block;width:100%;height:100%;object-fit:cover}.product h3,.tile h3{color:var(--ink)}
+</style>
+</head>
+<body>
+<div class="workspace">
+  <aside class="controls" aria-label="Design controls">
+    <h1>Palette playground</h1><p>Explore a direction for your storefront. Changes save in this browser.</p>
+    <fieldset><legend>Starting palettes</legend><div class="presets"><button type="button" data-preset="original">Original</button><button type="button" data-preset="coastal">Coastal</button><button type="button" data-preset="sunset">Sunset</button><button type="button" data-preset="ink">Ink &amp; lime</button></div></fieldset>
+    <fieldset><legend>Figma color schemes</legend><label for="figma-palette">Choose a scheme</label><select id="figma-palette" style="width:100%;padding:8px;margin-top:8px"><option value="">Select a palette…</option></select><div id="source-swatches" class="source-swatches" aria-label="Colors sampled from the reference palette"></div><p class="contrast">Swatches are sampled from Figma’s compressed images, so values may vary slightly. The preview maps four colors to roles; click a swatch to copy its hex value.</p></fieldset>
+    <fieldset><legend>Colors</legend><label class="control">Canvas <input type="color" data-color="canvas" value="#f2f0ea"></label><label class="control">Surface <input type="color" data-color="surface" value="#a8d5e3"></label><label class="control">Accent / CTA <input type="color" data-color="accent" value="#ff78ac"></label><label class="control">Text <input type="color" data-color="ink" value="#18181b"></label><p class="contrast" id="contrast" aria-live="polite"></p></fieldset>
+    <fieldset><legend>Typography</legend><label class="control">Headings <select id="display"><option value="impact">Bold condensed</option><option value="geometric">Geometric sans</option><option value="serif">Editorial serif</option><option value="rounded">Friendly sans</option></select></label><label class="control">Body <select id="body"><option value="arial">Clean sans</option><option value="system">System sans</option><option value="georgia">Classic serif</option><option value="trebuchet">Rounded sans</option></select></label></fieldset>
+    <p class="contrast" id="font-status" aria-live="polite">Web fonts require an internet connection. Some fonts require local installation.</p>
+    <fieldset><legend>Layout</legend><label class="control">Hero <select id="layout"><option value="default">Copy left</option><option value="split">Image left</option><option value="stacked">Stacked</option></select></label><div class="actions" aria-label="Preview width"><button type="button" data-view="desktop" aria-pressed="true">Desktop</button><button type="button" data-view="mobile" aria-pressed="false">Mobile</button></div></fieldset>
+    <fieldset><legend>Keep a direction</legend><div class="actions"><button type="button" id="copy">Copy settings</button><button type="button" id="reset">Reset</button></div><p class="notice" id="notice" role="status"></p></fieldset>
+  </aside>
+  <main class="stage"><div class="stage-bar"><strong>STOREFRONT PREVIEW</strong><span>Illustrative layout · links are inactive</span></div>
+    <div class="preview" id="preview">
+      <div class="announcement">A little sunshine for every day &nbsp; · &nbsp; Shop the collection ↗</div>
+      <div class="nav"><span class="hamburger" aria-hidden="true">☰</span><span class="logo">LOOR</span><div class="nav-links"><span>Shop all</span><span>Best sellers</span><span>New arrivals</span></div><div class="nav-tools"><span>Search</span><span>Cart (0)</span></div></div>
+      <div class="hero"><div class="hero-copy"><p class="eyebrow">Made for brighter days</p><h2>Find your<br>sunny side</h2><p>Frames for every version of you. Find your perfect pair and get out there.</p><span class="cta">Shop the collection ↗</span></div><div class="hero-art"><img src="mockup-images/hero.jpg" alt="Model wearing orange sunglasses against a blue sky" width="1920" height="1080"></div></div>
+      <section class="content"><div class="section-head"><h2>Shop your way</h2><span>Explore all ↗</span></div><div class="tiles"><div class="tile"><div class="tile-image"><img src="mockup-images/everyday.png" alt="LOOR flash sale campaign" loading="lazy"></div><h3>Everyday essentials ↗</h3></div><div class="tile"><div class="tile-image"><img src="mockup-images/statement.png" alt="LOOR best sellers campaign" loading="lazy"></div><h3>Statement makers ↗</h3></div><div class="tile"><div class="tile-image"><img src="mockup-images/new-arrivals.png" alt="LOOR new arrivals campaign" loading="lazy"></div><h3>New arrivals ↗</h3></div></div></section>
+      <section class="content"><div class="section-head"><h2>Your new favorites</h2><span>View all ↗</span></div><div class="products"><div class="product"><div class="product-image"><img src="mockup-images/Bambai%20Breeze.jpg" alt="Bambai Breeze sunglasses" loading="lazy"></div><h3>Bambai Breeze</h3><p>LOOR sunglasses</p></div><div class="product"><div class="product-image"><img src="mockup-images/Kala%20Chashma.jpg" alt="Kala Chashma sunglasses" loading="lazy"></div><h3>Kala Chashma</h3><p>LOOR sunglasses</p></div><div class="product"><div class="product-image"><img src="mockup-images/Mango%20Mania.jpg" alt="Mango Mania sunglasses" loading="lazy"></div><h3>Mango Mania</h3><p>LOOR sunglasses</p></div><div class="product"><div class="product-image"><img src="mockup-images/Goa%20Goggles.jpg" alt="Goa Goggles sunglasses" loading="lazy"></div><h3>Goa Goggles</h3><p>LOOR sunglasses</p></div></div></section>
+      <div class="trust"><strong>Made for everyday adventures</strong> &nbsp; · &nbsp; Find your perfect pair.</div>
+    </div>
+  </main>
+</div>
+<script>
+(() => {
+  const defaults = { canvas:'#f2f0ea', surface:'#a8d5e3', accent:'#ff78ac', ink:'#18181b', display:'impact', body:'arial', layout:'default', view:'desktop' };
+  const presets = { original:defaults, coastal:{canvas:'#f7f4e9',surface:'#b7d7d1',accent:'#f6ae9f',ink:'#173c40'}, sunset:{canvas:'#fff2df',surface:'#f5c5aa',accent:'#df486d',ink:'#321d2d'}, ink:{canvas:'#f5f2e9',surface:'#dce7a3',accent:'#c3e65b',ink:'#202a20'} };
+  const displayFonts = {impact:"Impact, 'Arial Narrow', sans-serif", geometric:"'Arial Black', Arial, sans-serif", serif:"Georgia, 'Times New Roman', serif", rounded:"'Trebuchet MS', Arial, sans-serif"};
+  const bodyFonts = {arial:'Arial, sans-serif', system:'system-ui, sans-serif', georgia:"Georgia, 'Times New Roman', serif", trebuchet:"'Trebuchet MS', Arial, sans-serif"};
+  const figmaPalettes = [{"name": "Ink wash", "colors": ["#252525", "#C9C9C9", "#7D7D7D", "#555555"]}, {"name": "Neutral elegance", "colors": ["#FFDBBA", "#D0C1B1", "#9A7E67", "#684C33"]}, {"name": "Jade pebble morning", "colors": ["#7B9769", "#E7E7E7", "#404F3C", "#6D8481", "#B9C8B1"]}, {"name": "Woodland", "colors": ["#9F7561", "#9E9E9E", "#535134", "#AAD31D", "#D3AFA0"]}, {"name": "Driftwood pearl morning", "colors": ["#BB7B6F", "#59312A", "#CCCDC8", "#E4A499", "#708A9F"]}, {"name": "Graphite", "colors": ["#C0C0C2", "#F4E9E6", "#ECC5C6", "#837D68", "#8A9EB0"]}, {"name": "Urban slate", "colors": ["#E9E7E8", "#5F5652", "#6C7C99", "#7A7F8B", "#AC978C"]}, {"name": "Pearl", "colors": ["#E9E3DE", "#A6937C", "#AF9AC8", "#E3C39A", "#666261"]}, {"name": "Vichy", "colors": ["#BBBFC0", "#8B8B8B", "#05AC98", "#FFFFFF"]}, {"name": "Sorbet", "colors": ["#CCCCCC", "#ECECEC", "#B7C396", "#FEFEFE", "#E0E7D7", "#B99B91"]}, {"name": "Frozen mist", "colors": ["#7B7D75", "#AEACA8", "#DD700C", "#FCF8D7", "#D9DBDF"]}, {"name": "Yacht club", "colors": ["#F3F1EF", "#BDC0BF", "#225F73", "#723E22"]}, {"name": "Amber walnut morning", "colors": ["#EAEFEE", "#CBB49A", "#4C413D", "#C8916D", "#BC6C42"]}, {"name": "Copper aquamarine dream", "colors": ["#DCAB89", "#30535C", "#C25628", "#D77A4E", "#4D848D", "#BFB9B4"]}, {"name": "Cocoa topaz noonday", "colors": ["#732F14", "#5B84AD", "#5B3C2D", "#C7AB9E", "#FB9C44"]}, {"name": "Sandstone aquamarine serenity", "colors": ["#BC6D51", "#304D53", "#B0E1E7", "#DCAD9B", "#5A2E24"]}, {"name": "Honey opal sunset", "colors": ["#ECB914", "#F7D67A", "#503C35", "#9D8108", "#CBB8A1"]}, {"name": "Seashell garnet afternoon", "colors": ["#F7C992", "#F96E81", "#AEC0D3", "#D496A6", "#08A1A2", "#5484A3"]}, {"name": "Rose quartz evening", "colors": ["#63242E", "#AE4247", "#FC8F90", "#E0D9D9"]}, {"name": "Calcite", "colors": ["#DEDCDA", "#FC7B40", "#EDBE9C", "#3C4043"]}, {"name": "Fireside", "colors": ["#E86814", "#D9D4BD", "#8A1A10", "#DC8235", "#B8200F", "#724237"]}, {"name": "Terrazzo", "colors": ["#EDBD97", "#37504E", "#AA8554", "#D27F1E", "#DACCC3"]}, {"name": "Sapphire nightfall whisper", "colors": ["#0474C5", "#5378AE", "#2C444E", "#A8C4ED", "#064580", "#262C40"]}, {"name": "Lapis velvet evening", "colors": ["#213985", "#EBE0D2", "#5F3475", "#071849", "#CCC9CD", "#893173"]}, {"name": "Marina", "colors": ["#FFF1E8", "#BBD2E3", "#316181", "#7F5232"]}, {"name": "Emerald lavender lake", "colors": ["#238C54", "#88618E", "#97DCE5"]}, {"name": "Sage peridot morning", "colors": ["#345D31", "#98AA56", "#A7F1DF", "#97CD97"]}, {"name": "Amethyst dawn haze", "colors": ["#341C69", "#472F5C", "#DECD43", "#C5AEF3", "#CCA5B4"]}, {"name": "Moon dust", "colors": ["#D4D4FF", "#CCB8FE", "#8FC1DE", "#80ACEF"]}, {"name": "Turquoise amber autumn", "colors": ["#304B64", "#25788E", "#631B0A", "#A5CCD3", "#E3480D"]}, {"name": "Sapphire ash morning", "colors": ["#34637A", "#E6ADAA", "#B46159", "#A6A9CF", "#F6F6F6", "#8E9A98"]}, {"name": "Frosted aura", "colors": ["#5C7E90", "#9CA1A2", "#D5DDE3", "#FDFFFF"]}, {"name": "Royal glimmer", "colors": ["#AD7C4A", "#293C7C", "#822B4A", "#C89850", "#024943"]}, {"name": "Neptune", "colors": ["#8FD9FC", "#4EB4B8", "#6D8BC1", "#5259FF"]}, {"name": "Tropical jade sunrise", "colors": ["#FCA57C", "#23CED9", "#097C87", "#F9D679", "#A2CCA7"]}, {"name": "Amethyst mint harmony", "colors": ["#2A3F38", "#8EF688", "#F650BC", "#572E55", "#57595D"]}, {"name": "Hibiscus aura", "colors": ["#EA43D5", "#DE3026", "#733D6F", "#5748B3"]}, {"name": "Ocean ruby radiance", "colors": ["#D8226B", "#B3DAE3", "#005AB2", "#F96A38", "#029556"]}, {"name": "Tropical heat", "colors": ["#01CFC9", "#FCEEC3", "#FF9C61", "#EC4203"]}, {"name": "Celestial", "colors": ["#2324FF", "#7F7D53", "#FFBD24", "#FFE92E"]}, {"name": "Festive eve", "colors": ["#2324FF", "#23AFFF", "#C14AFF", "#7D3DFF"]}, {"name": "Freshly squeezed", "colors": ["#FFBF01", "#F7CF72", "#FFE642", "#FF7901"]}, {"name": "Jelly shoes", "colors": ["#E1AFFF", "#CBD3FF", "#DD67E3", "#8766DF"]}, {"name": "Opaline", "colors": ["#F5F4F7", "#E8E8E8", "#D3D2D5", "#FF644B"]}, {"name": "Gossamer", "colors": ["#FAFAFA", "#939599", "#EC4C27", "#CDCDCF", "#2BCFCF"]}, {"name": "Clockwork", "colors": ["#919598", "#F8F8F8", "#E56517", "#CDCDCB", "#FAA45B"]}, {"name": "Lemon granite morning", "colors": ["#F2E408", "#B9BFC2", "#6C8495", "#304D5E"]}, {"name": "Arctic reflection", "colors": ["#5189AD", "#243C4D", "#698695", "#ADBCC0", "#F3FCFB"]}, {"name": "Slate", "colors": ["#BEBEBE", "#7AED92", "#F1F1F1", "#4DBE56", "#71786C"]}, {"name": "Autumn luxe", "colors": ["#E3E1EB", "#AAA9AE", "#322C27", "#807264", "#C0843F"]}, {"name": "Inked", "colors": ["#000000", "#E0DEDC", "#A7A7A2", "#464646", "#00ADAE"]}, {"name": "Wraith", "colors": ["#1E1803", "#E6E3E4", "#341F07", "#8C886A", "#047C58"]}, {"name": "Urban nocturne", "colors": ["#141414", "#444444", "#979797", "#D6D6D6", "#E2E800"]}];
+  const preview = document.querySelector('#preview'); const notice = document.querySelector('#notice'); let state = {...defaults};
+  try { const saved = JSON.parse(localStorage.getItem('vibrantPinkPalette') || '{}'); state = {...state, ...saved}; } catch (_) {}
+  const figmaFonts = ['Inter','Josefin Sans','Roboto','Open Sans','Rubik','DM Sans','Poppins','Lato','Nunito','Ubuntu','Ranade','Source Sans Pro','Work Sans','Manrope','Object Sans','Raleway','Montserrat','Playfair Display','Libre Baskerville','Soria','Neuton','Lora','Sreda','Arvo'];
+  const localFonts = new Set(['Ranade','Object Sans','Soria','Sreda']);
+  const serifFonts = new Set(['Playfair Display','Libre Baskerville','Soria','Neuton','Lora','Sreda','Arvo']);
+  const fontSelects = [document.querySelector('#display'),document.querySelector('#body')];
+  for (const select of fontSelects) { const group=document.createElement('optgroup'); group.label='Figma font guide'; for (const name of figmaFonts) { const option=document.createElement('option'); option.value='figma:'+name; option.textContent=name+(localFonts.has(name)?' (installed font)':''); group.append(option); } select.append(group); }
+  for (const name of figmaFonts) { const stack=`"${name}", ${serifFonts.has(name)?'Georgia, serif':'Arial, sans-serif'}`; displayFonts['figma:'+name]=stack; bodyFonts['figma:'+name]=stack; }
+  const paletteSelect=document.querySelector('#figma-palette');
+  figmaPalettes.forEach((palette,index)=>{ const option=document.createElement('option'); option.value=String(index); option.textContent=`${index+1}. ${palette.name}`; paletteSelect.append(option); });
+  function loadFont(value) { if (!value.startsWith('figma:')) return; const name=value.slice(6); if (localFonts.has(name)) return; const id='font-'+name.replace(/[^a-z0-9]/gi,'-'); if (document.getElementById(id)) return; const link=document.createElement('link'); link.id=id; link.rel='stylesheet'; link.href='https://fonts.googleapis.com/css2?family='+encodeURIComponent(name).replace(/%20/g,'+')+':wght@400;700&display=swap'; document.head.append(link); }
+  function showSwatches(palette) { const box=document.querySelector('#source-swatches'); box.replaceChildren(); palette.colors.forEach(color=>{ const button=document.createElement('button'); button.type='button'; button.style.background=color; button.title=color; button.setAttribute('aria-label','Copy '+color); button.addEventListener('click',async()=>{ try { await navigator.clipboard.writeText(color); notice.textContent=color+' copied.'; } catch (_) { notice.textContent='Swatch: '+color; } }); box.append(button); }); }
+  paletteSelect.addEventListener('change',()=>{ if (paletteSelect.value==='') { document.querySelector('#source-swatches').replaceChildren(); return; } const palette=figmaPalettes[Number(paletteSelect.value)]; const sorted=[...palette.colors].sort((a,b)=>luminance(a)-luminance(b)); const ink=sorted[0], canvas=sorted[sorted.length-1]; const middle=palette.colors.filter(c=>c!==ink && c!==canvas); Object.assign(state,{ink,canvas,surface:middle[0]||canvas,accent:middle[middle.length-1]||canvas}); showSwatches(palette); render(); });
+  function luminance(hex) { const rgb = hex.match(/[a-f\d]{2}/gi).map(x => parseInt(x,16)/255).map(x => x <= .04045 ? x/12.92 : ((x+.055)/1.055)**2.4); return .2126*rgb[0]+.7152*rgb[1]+.0722*rgb[2]; }
+  function ratio(a,b) { const values = [luminance(a),luminance(b)].sort((x,y)=>y-x); return (values[0]+.05)/(values[1]+.05); }
+  function render() {
+    for (const key of ['canvas','surface','accent','ink']) { if (!/^#[0-9a-f]{6}$/i.test(state[key])) state[key] = defaults[key]; preview.style.setProperty('--'+key,state[key]); document.querySelector(`[data-color="${key}"]`).value = state[key]; }
+    if (!displayFonts[state.display]) state.display = defaults.display; if (!bodyFonts[state.body]) state.body = defaults.body; if (!['default','split','stacked'].includes(state.layout)) state.layout = defaults.layout; if (!['desktop','mobile'].includes(state.view)) state.view = defaults.view;
+    loadFont(state.display); loadFont(state.body); const localSelected=[state.display,state.body].filter(v=>v.startsWith('figma:') && localFonts.has(v.slice(6))).map(v=>v.slice(6)); document.querySelector('#font-status').textContent=localSelected.length ? localSelected.join(', ')+' requires local installation; a fallback appears if unavailable. Other Figma fonts load from Google Fonts when online.' : 'Figma web fonts load from Google Fonts when online; system fonts work offline.';
+    preview.style.setProperty('--display',displayFonts[state.display]); preview.style.setProperty('--body',bodyFonts[state.body]); preview.className = 'preview '+state.layout+' '+state.view;
+    for (const key of ['display','body','layout']) document.querySelector('#'+key).value = state[key]; document.querySelectorAll('[data-view]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.view===state.view)));
+    const results = [['Canvas',state.canvas],['Surface',state.surface],['CTA',state.accent]].map(([name,color]) => { const value = ratio(state.ink,color); return `${name}: ${value.toFixed(2)}:1 ${value >= 4.5 ? '✓' : '— below 4.5:1'}`; }); document.querySelector('#contrast').textContent = 'Text contrast · '+results.join(' · ');
+    try { localStorage.setItem('vibrantPinkPalette',JSON.stringify(state)); } catch (_) {}
+  }
+  document.querySelectorAll('[data-color]').forEach(el => el.addEventListener('input',()=>{state[el.dataset.color]=el.value;render();}));
+  for (const key of ['display','body','layout']) document.querySelector('#'+key).addEventListener('change',e=>{state[key]=e.target.value;render();});
+  document.querySelectorAll('[data-preset]').forEach(b=>b.addEventListener('click',()=>{Object.assign(state,presets[b.dataset.preset]);render();}));
+  document.querySelectorAll('[data-view]').forEach(b=>b.addEventListener('click',()=>{state.view=b.dataset.view;render();}));
+  document.querySelector('#reset').addEventListener('click',()=>{state={...defaults};notice.textContent='Defaults restored.';render();});
+  document.querySelector('#copy').addEventListener('click',async()=>{ const text=JSON.stringify({...state,headingFont:displayFonts[state.display],bodyFont:bodyFonts[state.body]},null,2); try { await navigator.clipboard.writeText(text); notice.textContent='Settings copied to clipboard.'; } catch (_) { const area=document.createElement('textarea'); area.value=text; document.body.append(area); area.select(); try { if (!document.execCommand('copy')) throw new Error(); notice.textContent='Settings copied to clipboard.'; } catch (_) { notice.textContent='Copy unavailable. Select the settings in the dialog.'; prompt('Copy these settings:',text); } area.remove(); } });
+  render();
+})();
+</script>
+</body>
+</html>
