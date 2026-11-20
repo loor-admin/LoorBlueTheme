@@ -3,74 +3,24 @@
     "hero": {
       "type": "campaign-hero"
     },
-    "categories": {
-      "type": "category-tiles",
-      "blocks": {
-        "one": {
-          "type": "tile",
-          "settings": {
-            "heading": "Shop sunglasses"
-          }
-        },
-        "two": {
-          "type": "tile",
-          "settings": {
-            "heading": "Shop best sellers"
-          }
-        },
-        "three": {
-          "type": "tile",
-          "settings": {
-            "heading": "Shop new arrivals"
-          }
-        }
-      },
-      "block_order": [
-        "one",
-        "two",
-        "three"
-      ]
+    "benefits": {
+      "type": "coastal-benefits"
     },
-    "editorial": {
-      "type": "editorial-collaborations"
+    "products": {
+      "type": "coastal-products"
     },
-    "fit": {
-      "type": "fit-selector",
-      "blocks": {
-        "square": {
-          "type": "fit",
-          "settings": {
-            "heading": "Square"
-          }
-        },
-        "round": {
-          "type": "fit",
-          "settings": {
-            "heading": "Round"
-          }
-        },
-        "cat": {
-          "type": "fit",
-          "settings": {
-            "heading": "Cat eye"
-          }
-        }
-      },
-      "block_order": [
-        "square",
-        "round",
-        "cat"
-      ]
+    "story": {
+      "type": "coastal-story"
     },
-    "featured": {
-      "type": "featured-carousel"
+    "newsletter": {
+      "type": "coastal-newsletter"
     }
   },
   "order": [
     "hero",
-    "categories",
-    "editorial",
-    "fit",
-    "featured"
+    "benefits",
+    "products",
+    "story",
+    "newsletter"
   ]
 }
